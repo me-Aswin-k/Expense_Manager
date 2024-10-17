@@ -1,0 +1,106 @@
+
+
+
+{%extends 'base.html'%}
+
+{%block main_block%}
+
+
+<div class="container">
+    <div class="row my-3">
+        <div class="col-4"></div>
+        <div class="col-4 border border-2 rounded p-3 text-center shadow">
+            <h3>Total Expense: {{total_expense}}</h3>
+        </div>
+        <div class="col-4"></div>
+    </div>
+
+    <div class="row border mt-5 border-dark">
+        <div class="col-3  border border-dark p-2 text-center">
+            Category Summary
+            {%for cat in category_summary%}
+                <div class="border border-dark p-3 my-5 text-center">
+                {{cat.category_object__name}}:{{cat.total}}
+                </div>
+            {%endfor%}
+        </div>
+
+        <div class="col-3 border border-dark p-2 text-center">
+            Category Chart
+            <canvas id="categoryChart"></canvas>
+        </div>
+
+        <div class="col-3 border border-dark p-2 text-center">
+            Payment Summary
+            {%for payment in payment_summary%}
+                <div class="border border-dark p-3 my-5 text-center">
+                {{payment.payment_methode}}:{{payment.total}}
+                </div>
+            {%endfor%}
+        </div>
+        
+        <div class="col-3 border border-dark p-2 text-center">
+            Payment Chart
+            <canvas id="paymentChart"></canvas>
+        </div>
+        
+    </div>
+</div>
+
+{%endblock%} 
+
+
+
+{%block script_block%}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+    // plotting categorychart
+    const ctx = document.getElementById('categoryChart');
+  
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels:[{%for cat in category_summary%} '{{cat.category_object__name}}',{%endfor%}],
+        datasets:[{
+          label: '',
+          data:[{%for cat in category_summary%} '{{cat.total}}',{%endfor%}],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+
+    // plotting paymentchart
+    const ctx1 = document.getElementById('paymentChart');
+  
+    new Chart(ctx1, {
+      type: 'doughnut',
+      data: {
+        labels:[{%for payment in payment_summary%} '{{payment.payment_methode}}',{%endfor%}],
+        datasets:[{
+          label: '',
+          data:[{%for payment in payment_summary%} '{{payment.total}}',{%endfor%}],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+    
+</script>
+
+{%endblock%}
